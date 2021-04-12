@@ -138,7 +138,6 @@ const Search = {
     if (this.$store.state.userRole == 'DGAA') {
       this.isDGAA = true;
     }
-    this.isDGAA = true;
   },
 
 
