@@ -26,16 +26,18 @@ public class Product {
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date created;
     // images when we get to it.
+    private String photo;
 
     protected Product() { }
 
-    public Product(String id, long businessId, String name, String description, double recommendedRetailPrice, Date created) {
+    public Product(String id, long businessId, String name, String description, double recommendedRetailPrice, Date created, String photo) {
         this.id = id;
         this.businessId = businessId;
         this.name = name;
         this.description = description;
         this.recommendedRetailPrice = recommendedRetailPrice;
         this.created = created;
+        this.photo = photo;
     }
 
 }
