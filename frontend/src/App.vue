@@ -5,12 +5,15 @@
       <table>
         <tr>
           <div id='loggedIn' v-if="getLoggedInUser() == null">
-          <th>
-            <router-link class="title" to="/">Register</router-link>
-          </th>
-          <th>
-            <router-link class="title" to="/login">Login</router-link>
-          </th>
+            <th>
+              <router-link class="title" to="/">Register</router-link>
+            </th>
+            <th>
+              <router-link class="title" to="/login">Login</router-link>
+            </th>
+            <th>
+              <router-link class="title" to="/upload">Upload</router-link>
+            </th>
           </div>
           <div v-else>
           <th>

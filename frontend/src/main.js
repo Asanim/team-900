@@ -39,6 +39,7 @@ import Login from "@/components/Login";
 import BusinessRegister from "@/components/BusinessRegister";
 import Register from "./components/Register";
 import Users from "@/components/Users.vue";
+import Upload from "@/components/Upload.vue";
 import Search from "@/components/Search.vue";
 import Business from "@/components/Business.vue";
 import BusinessAdministrators from "@/components/BusinessAdministrators";
@@ -67,6 +68,7 @@ const routes = [
   {path: '/businesses', component: BusinessRegister},
   {name: 'LoginPage', path: '/login', component: Login},
   {path: '/', component: Register},
+  {path: '/upload', component: Upload},
   {name: 'UserPage', path: '/users/:id', component: Users},
   {path: '/search', component: Search},
   {
