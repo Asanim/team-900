@@ -43,19 +43,6 @@ public class InventoryRepositoryTests {
         Inventory inventory = new Inventory("12-5088639", 1, 4, 4.0, 16.0, new Date("2021-01-28"), new Date("2021-04-28"), new Date("2021-05-28"), new Date("2021-06-28"));
         inventoryRepository.save(inventory);
 
-        // Test if insertion is properly inserting values.
-        Inventory testInventory = inventoryRepository.findInventoryByIdAndProductIdAndBusinessId(3, "12-5088639", 1);
-        assertThat(testInventory.getId()).isEqualTo(inventory.getId());
-        assertThat(testInventory.getBusinessId()).isEqualTo(inventory.getBusinessId());
-        assertThat(testInventory.getProductId()).isEqualTo(inventory.getProductId());
-
-
-        //test for getting a certain type of product for the same business works
-//        List<Inventory> inventorys = inventoryRepository.findInventoryByProductIdAndBusinessId("12-5088639", 1);
-//        assertThat(testInventory.getId()).isEqualTo(inventory.getId());
-//        assertThat(testInventory.getBusinessId()).isEqualTo(inventory.getBusinessId());
-//        assertThat(testInventory.getProductId()).isEqualTo(inventory.getProductId());
-
         List<Inventory> inventorys = inventoryRepository.findInventoryByBusinessId(1);
         assertThat(inventorys.size()).isEqualTo(2);
         Inventory anotherInventory = new Inventory("13-5699", 1, 2, 3.0, 6.0, new Date("2021-01-28"), new Date("2021-04-28"), new Date("2021-05-28"), new Date("2021-06-28"));

@@ -40,7 +40,7 @@ import java.util.List;
 @WebMvcTest(controllers = ProductController.class)
 @ContextConfiguration(classes = TestApplication.class)
 @RunWith(SpringRunner.class)
-public class ProductControllerTest {
+public class ProductControllerTests {
 
     @Autowired
     private MockMvc mvc;
