@@ -90,6 +90,8 @@ public class InventoryController {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             } else {
                 try { //Validation done in Inventory model
+                    System.out.println("DEBUG: "+request);
+
                     Inventory newInventoryItem = new Inventory(request, business.getId());
                     inventoryRepository.save(newInventoryItem);
 

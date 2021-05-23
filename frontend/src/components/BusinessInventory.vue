@@ -500,7 +500,14 @@ export default {
     },
     addInventory: function() {
       if (this.errors.length === 0) {
-        console.log("DEBUG: adding to inventory...")
+
+        //automatically calculate the total price
+        if (this.totalPrice >= 0) {
+          this.totalPrice = this.quantity*this.pricePerItem;
+        }
+
+        console.log("DEBUG: " + this.totalPrice);
+
         api.createInventory(store.actingAsBusinessId, this.prodId, this.quantity, this.pricePerItem, this.totalPrice, this.manufactureDate, this.sellBy, this.bestBefore, this.listExpiry)
           .then((response) => {
             this.$log.debug("New catalogue item created:", response.data);
