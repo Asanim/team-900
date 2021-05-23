@@ -72,8 +72,8 @@
             <div class="row">
               <label for="manufactureDate">Manufacture date</label>
               <vs-input
-                  :danger="(errors.includes('past-manu'))"
-                  danger-text="Date cannot be in past"
+                  :danger="(errors.includes('future-manu'))"
+                  danger-text="Date cannot be in the future"
                   type="date"
                   id="manufactureDate"
                   class="inputx"
@@ -105,12 +105,16 @@
           <label for="InvId">Inventory Item ID</label>
           <!-- TODO: add v-on:change to change Product name -->
           <vs-select id="InvId" class="selectExample" v-model="invItem" v-on:change="changeInvVals">
-            <vs-select-item :value="invItem" :text="invItem.id" v-for="invItem in inventory" v-bind:href="invItem.id" :key="invItem.id"/>
+            <vs-select-item :value="invItem" :text="' (' + invItem.id +') '+ invItem.productName" v-for="invItem in inventory" v-bind:href="invItem.id" :key="invItem.id"/>
           </vs-select>
         </div>
         <div id="listing-product-name">
           <div class="sub-header">Inventory Item Name</div>
-          <div style="font-size: 18px;" v-if="invItem.length !== 0">{{ invItem.product.name }}</div>
+          <div style="font-size: 18px; text-align: left; font-weight: bold" v-if="invItem.length !== 0">{{ invItem.product.name }}</div>
+          <div style="font-size: 10px; text-align: left" v-if="invItem.length !== 0">Price {{ invItem.pricePerItem }}</div>
+          <div style="font-size: 10px; text-align: left" v-if="invItem.length !== 0">Sell By {{ invItem.sellBy }}</div>
+          <div style="font-size: 10px; text-align: left" v-if="invItem.length !== 0">Qty {{ invItem.quantity }}</div>
+
           <div style="font-size: 18px;" v-else></div>
         </div>
         <vs-divider id="listing-divider"></vs-divider>
@@ -158,7 +162,8 @@
               :maxItems="5"
               stripe>
       <template class="table-head" slot="thead" >
-        <vs-th sort-key="productId" style="border-radius: 8px 0 0 0"> ID </vs-th>
+        <vs-th sort-key="id" style="border-radius: 8px 0 0 0; width: 40px;"> ID</vs-th>
+        <vs-th sort-key="productId" > Image </vs-th>
         <vs-th sort-key="productName"> Product </vs-th>
         <vs-th class="dateInTable" sort-key="manufactured"> Manufactured </vs-th>
         <vs-th class="dateInTable" sort-key="sellBy"> Sell By </vs-th>
@@ -170,7 +175,8 @@
         <vs-th style="border-radius: 0 8px 0 0"> <!-- Action Button Column --> </vs-th>
       </template>
       <template slot-scope="{data}">
-        <vs-tr v-for="inventory in data" :key="inventory.id"> <!-- todo: connect data with table -->
+        <vs-tr v-for="inventory in data" :key="inventory.id">
+          <vs-td :data="inventory.id" style=" text-align: center; font-weight: bold; font-size: 10pt"> ({{inventory.id}}) </vs-td>
           <vs-td id="productIdCol" :data="inventory.productId">
           {{inventory.productId}}
           <div style="height: 80px">
@@ -185,8 +191,8 @@
           <vs-td :data="inventory.bestBefore">{{inventory.bestBefore}} </vs-td>
           <vs-td :data="inventory.expires">{{inventory.expires}} </vs-td>
           <vs-td :data="inventory.quantity">{{inventory.quantity}} </vs-td>
-          <vs-td :data="inventory.pricePerItem">{{inventory.pricePerItem}} </vs-td>
-          <vs-td :data="inventory.totalPrice">{{inventory.totalPrice}}</vs-td>
+          <vs-td :data="inventory.pricePerItem">{{currency + inventory.pricePerItem}} </vs-td>
+          <vs-td :data="inventory.totalPrice">{{currency + inventory.totalPrice}}</vs-td>
           <vs-td> </vs-td>
         </vs-tr>
       </template>
@@ -400,6 +406,15 @@ export default {
 
         return false;
       }
+
+      var dateInFuture = function(firstDate, secondDate) {
+        if(firstDate.setHours(0,0,0,0) >= secondDate.setHours(0,0,0,0)) {
+          return true;
+        }
+
+        return false;
+      }
+
       if (this.bestBefore === '' && this.sellBy === '' && this.manufactureDate === ''
           && this.listExpiry === '') {
         this.errors.push('no-dates');
@@ -434,9 +449,9 @@ export default {
       if (this.manufactureDate !== '') {
         timestamp = Date.parse(this.manufactureDate);
         dateObject = new Date(timestamp)
-        if (dateInPast(dateObject, today) === true) {
+        if (dateInFuture(dateObject, today) === true) {
           this.errors.push('past-date');
-          this.errors.push('past-manu');
+          this.errors.push('future-manu');
         }
       }
       if (this.sellBy !== '') {
@@ -450,7 +465,7 @@ export default {
       if (this.quantity <= 0) {
         this.errors.push(this.quantity);
       }
-      if (this.invDescription.length > 25) {
+      if (this.invDescription.length > 250) {
         this.errors.push('no-desc');
       }
       if (this.errors.includes('no-dates')) {
@@ -470,7 +485,7 @@ export default {
       if (this.errors.includes('no-desc')) {
         this.$vs.notify({
           title: 'Failed to create inventory item',
-          text: 'Description (MAX 25 CHARS).',
+          text: 'Description (MAX 250 CHARS).',
           color: 'danger'
         });
       }
@@ -485,6 +500,7 @@ export default {
     },
     addInventory: function() {
       if (this.errors.length === 0) {
+        console.log("DEBUG: adding to inventory...")
         api.createInventory(store.actingAsBusinessId, this.prodId, this.quantity, this.pricePerItem, this.totalPrice, this.manufactureDate, this.sellBy, this.bestBefore, this.listExpiry)
           .then((response) => {
             this.$log.debug("New catalogue item created:", response.data);
@@ -499,15 +515,31 @@ export default {
             if (error.response) {
               console.log(error);
               if (error.response.status === 400) {
-                this.$vs.notify( {
-                  title: 'Failed to add an inventory item',
-                  text: 'Incomplete form, or the product does not exist.',
-                  color: 'danger'
-                });
+                if (this.getActingAsBusinessId() == null) {
+                  this.$vs.notify( {
+                    title: 'Failed to add an inventory item',
+                    text: 'User is not a business administrator',
+                    color: 'danger'
+                  });
+                } else {
+                  this.$vs.notify( {
+                    title: 'Failed to add an inventory item',
+                    text: 'Incomplete form, or the product does not exist.',
+                    color: 'danger'
+                  });
+                }
+
+
               } else if (error.response.status === 403) {
                 this.$vs.notify( {
                   title: 'Failed to add an inventory item',
                   text: 'You do not have the rights to access this business',
+                  color: 'danger'
+                });
+              } else if (error.response.status === 404) {
+                this.$vs.notify( {
+                  title: 'Failed to add an inventory item',
+                  text: 'There was a problem adding the inventory item to the database',
                   color: 'danger'
                 });
               }
@@ -530,6 +562,10 @@ export default {
         this.pricePerItem = this.products[prodInd]["recommendedRetailPrice"];
         this.invDescription = this.products[prodInd]["description"];
       }
+    },
+
+    getActingAsBusinessId() {
+      return store.actingAsBusinessId;
     },
 
 
