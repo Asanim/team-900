@@ -90,7 +90,7 @@
                   v-model="sellBy"/>
             </div>
           </div>
-          <div class="form-group required vs-col" align="center" id="addButton" @click="addInventory(); checkForm()">
+          <div class="form-group required vs-col" align="center" id="addButton" @click="addInventory()">
             <vs-button>Add product</vs-button>
           </div>
         </vs-popup>
@@ -492,10 +492,13 @@ export default {
           color: 'danger'
         });
       }
-
+      if (this.errors.length > 0) {
+        return false;
+      }
+      return true;
     },
     addInventory: function() {
-      if (this.errors.length === 0) {
+      if (this.checkForm()) {
 
         // //automatically calculate the total price
         // if (this.totalPrice >= 0) {
