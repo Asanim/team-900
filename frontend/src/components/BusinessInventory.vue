@@ -12,13 +12,13 @@
         <vs-popup classContent="popup-example"  title="Add a product to your inventory" :active.sync="addNewInv">
         <div class="form-group required vs-col" vs-order="1" id="firstColModal">
             <div class="row">
-              <label for="prodId">Product</label>
+              <label for="prodId">Product *</label>
               <vs-select id="prodId" class="selectExample" v-model="prodId" v-on:change="autofill">
                 <vs-select-item :value="product.id" :text="product.name" v-for="product in products" v-bind:href="product.id" :key="product.id"/>
               </vs-select>
             </div>
             <div class="row">
-              <label for="pricePerItem">Price per item</label>
+              <label for="pricePerItem">Price per item *</label>
               <vs-input
                   :danger="(errors.includes(pricePerItem))"
                   danger-text="Price per item must be greater than zero and numeric."
@@ -27,8 +27,18 @@
                   placeholder="Price per item"
                   v-model="pricePerItem"/>
             </div>
+          <div class="row">
+            <label for="totalPrice">Total price *</label>
+            <vs-input
+                :danger="(errors.includes(totalPrice))"
+                danger-text="Total price must be greater than zero and numeric."
+                class="inputx"
+                id="totalPrice"
+                placeholder="Price per item"
+                v-model="totalPrice"/>
+          </div>
             <div class="row">
-              <label for="quantity">Quantity</label>
+              <label for="quantity">Quantity *</label>
               <vs-input-number
                   :danger="(errors.includes(quantity))"
                   danger-text="Quantity must be greater than zero."
@@ -37,20 +47,10 @@
                   id="quantity"
                   v-model="quantity"/>
             </div>
-            <div class="row">
-              <label for="description">Description</label>
-              <vs-textarea
-                  width="200px"
-                  height="50px"
-                  class="description-textarea"
-                  id="description"
-                  v-model="invDescription">
-              </vs-textarea>
-            </div>
           </div>
           <div class="form-group required vs-col" vs-order="2" id="secondColModal">
             <div class="row">
-              <label for="bestBefore">Best before</label>
+              <label for="bestBefore">Best before *</label>
               <vs-input
                   :danger="(errors.includes('past-best'))"
                   danger-text="Date cannot be in past"
@@ -60,7 +60,7 @@
                   v-model="bestBefore"/>
             </div>
             <div class="row">
-              <label for="listingExpiry">Listing expiry</label>
+              <label for="listingExpiry">Listing expiry *</label>
               <vs-input
                   :danger="(errors.includes('past-expiry'))"
                   danger-text="Expiry date is required and cannot be in past"
@@ -70,7 +70,7 @@
                   v-model="listExpiry"/>
             </div>
             <div class="row">
-              <label for="manufactureDate">Manufacture date</label>
+              <label for="manufactureDate">Manufacture date *</label>
               <vs-input
                   :danger="(errors.includes('future-manu'))"
                   danger-text="Date cannot be in the future"
@@ -80,7 +80,7 @@
                   v-model="manufactureDate"/>
             </div>
             <div class="row">
-              <label for="sellBy">Sell by</label>
+              <label for="sellBy">Sell by *</label>
               <vs-input
                   :danger="(errors.includes('past-sell'))"
                   danger-text="Date cannot be in past"
@@ -222,7 +222,6 @@ export default {
       totalPrice: 0.0,
       quantity: 0,
 
-      invDescription: '',
       bestBefore: '',
       listExpiry: '',
       manufactureDate: '',
@@ -465,9 +464,6 @@ export default {
       if (this.quantity <= 0) {
         this.errors.push(this.quantity);
       }
-      if (this.invDescription.length > 250) {
-        this.errors.push('no-desc');
-      }
       if (this.errors.includes('no-dates')) {
         this.$vs.notify({
           title: 'Failed to create inventory item',
@@ -501,10 +497,10 @@ export default {
     addInventory: function() {
       if (this.errors.length === 0) {
 
-        //automatically calculate the total price
-        if (this.totalPrice >= 0) {
-          this.totalPrice = this.quantity*this.pricePerItem;
-        }
+        // //automatically calculate the total price
+        // if (this.totalPrice >= 0) {
+        //   this.totalPrice = this.quantity*this.pricePerItem;
+        // }
 
         console.log("DEBUG: " + this.totalPrice);
 
@@ -567,7 +563,6 @@ export default {
         }
         console.log(this.products[prodInd])
         this.pricePerItem = this.products[prodInd]["recommendedRetailPrice"];
-        this.invDescription = this.products[prodInd]["description"];
       }
     },
 
