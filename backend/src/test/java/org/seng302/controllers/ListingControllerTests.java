@@ -119,6 +119,9 @@ public class ListingControllerTests {
 
         // Test for 200 status & correct JSON output.
         assert result.getResponse().getStatus() == HttpStatus.OK.value();
+
+        //System.out.println("DEBUG: " + result.getResponse().getContentAsString());
+        //assertThat(result.getResponse().getContentAsString()).isEqualToIgnoringWhitespace(mapper.writeValueAsString(listingList));
     }
 
     @Test

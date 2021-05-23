@@ -266,9 +266,6 @@ public class InventoryControllerTests {
     @WithMockUser(roles="USER")
     public void testPostWithNegativeTotalPrice() throws Exception {
         inventory1.setTotalPrice(-1);
-        inventory1.setQuantity(1);
-        System.out.println("DEBUGSAM: "+inventory1);
-
         Mockito.when(businessRepository.findBusinessById(business.getId())).thenReturn(business);
         Mockito.when(productRepository.findProductByIdAndBusinessId(null, business.getId())).thenReturn(product1);
         mvc.perform(post("/businesses/{id}/inventory", business.getId())

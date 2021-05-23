@@ -18,22 +18,12 @@ public class NewInventoryRequest {
     private Date bestBefore;
     private Date expires;
 
-    /**
-     * New inventory Request. Called when the a new inventory listing is added from the frontend.
-     * @param productId
-     * @param quantity
-     * @param pricePerItem
-     * @param totalPrice
-     * @param manufactured
-     * @param sellBy
-     * @param bestBefore
-     * @param expires
-     */
+
     public NewInventoryRequest(String productId, int quantity, double pricePerItem, double totalPrice, Date manufactured, Date sellBy, Date bestBefore, Date expires) {
         this.productId = productId;
         this.quantity = quantity;
         this.pricePerItem = pricePerItem;
-        this.totalPrice = totalPrice;
+        this.totalPrice = pricePerItem*quantity;
         this.manufactured = manufactured;
         this.sellBy = sellBy;
         this.bestBefore = bestBefore;
