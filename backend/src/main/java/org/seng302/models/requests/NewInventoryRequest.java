@@ -23,7 +23,7 @@ public class NewInventoryRequest {
         this.productId = productId;
         this.quantity = quantity;
         this.pricePerItem = pricePerItem;
-        this.totalPrice = totalPrice;
+        this.totalPrice = pricePerItem*quantity;
         this.manufactured = manufactured;
         this.sellBy = sellBy;
         this.bestBefore = bestBefore;

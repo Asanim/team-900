@@ -146,27 +146,6 @@ public class InventoryControllerTests {
                 .sessionAttr(User.USER_SESSION_ATTRIBUTE, adminUser))
                 .andExpect(status().isOk());
     }
-//
-//    @Test
-//    @WithMockUser(roles="USER")
-//    public void testPostProductAsGlobalAdmin() throws Exception {
-//        User DGAAUser = new User("email@email.com", "password", Role.DGAA);
-//        User GAAUser = new User("email2@email.com", "password", Role.GAA);
-//
-//        Mockito.when(businessRepository.findBusinessById(business.getId())).thenReturn(business);
-//        mvc.perform(post("/businesses/{id}/products", business.getId())
-//                .sessionAttr(User.USER_SESSION_ATTRIBUTE, DGAAUser)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(mapper.writeValueAsString(product1)))
-//                .andExpect(status().isCreated());
-//
-//        mvc.perform(post("/businesses/{id}/products", business.getId())
-//                .sessionAttr(User.USER_SESSION_ATTRIBUTE, GAAUser)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(mapper.writeValueAsString(product1)))
-//                .andExpect(status().isCreated());
-//    }
-
 
     //
     ////Inventory POST tests
