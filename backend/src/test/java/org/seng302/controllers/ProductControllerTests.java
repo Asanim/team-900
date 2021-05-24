@@ -41,7 +41,6 @@ import java.util.List;
 
 @WebMvcTest(controllers = ProductController.class)
 @ContextConfiguration(classes = TestApplication.class)
-@RunWith(SpringRunner.class)
 public class ProductControllerTests {
 
     @Autowired
@@ -99,8 +98,8 @@ public class ProductControllerTests {
         Mockito.when(productRepository.findProductsByBusinessId(business.getId())).thenReturn(productList);
 
         MvcResult result = mvc.perform(get("/businesses/{id}/products", business.getId())
-                    .sessionAttr(User.USER_SESSION_ATTRIBUTE, user))
-                    .andReturn();
+                .sessionAttr(User.USER_SESSION_ATTRIBUTE, user))
+                .andReturn();
 
         // Test for 200 status & correct JSON output.
         assert result.getResponse().getStatus() == HttpStatus.OK.value();

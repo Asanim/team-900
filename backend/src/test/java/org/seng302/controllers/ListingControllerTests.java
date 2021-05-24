@@ -5,9 +5,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.cucumber.java.ca.Cal;
 
 import org.junit.jupiter.api.BeforeEach;
+
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -44,7 +44,6 @@ import java.util.Calendar;
 
 @WebMvcTest(controllers = ListingController.class)
 @ContextConfiguration(classes = TestApplication.class)
-@RunWith(SpringRunner.class)
 public class ListingControllerTests {
 
     @Autowired
@@ -115,8 +114,8 @@ public class ListingControllerTests {
         Mockito.when(listingRepository.findListingsByInventoryItem(testInven1)).thenReturn(listingList);
 
         MvcResult result = mvc.perform(get("/businesses/{id}/listings", business.getId())
-                    .sessionAttr(User.USER_SESSION_ATTRIBUTE, user))
-                    .andReturn();
+                .sessionAttr(User.USER_SESSION_ATTRIBUTE, user))
+                .andReturn();
 
         // Test for 200 status & correct JSON output.
         assert result.getResponse().getStatus() == HttpStatus.OK.value();
