@@ -42,6 +42,8 @@
 
             <ImageUpload :businessId=businessId :products=products style="margin: 0 0.5em; width: 100px;"/>
             <vs-button @click="$router.push(`/businesses/${$route.params.id}/inventory`)" style="margin: 0 0.5em; width: 100px;">Inventory</vs-button>
+
+            <vs-button @click="$router.push(`/addtocatalogue`)" style="margin: 0 0.5em; width: 100px;">Add To Catalogue</vs-button>
           </div>
 
           <!-- If search query returns more than 10 products then this should be active -->

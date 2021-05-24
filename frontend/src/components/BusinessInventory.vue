@@ -191,8 +191,8 @@
           <vs-td :data="inventory.bestBefore">{{inventory.bestBefore}} </vs-td>
           <vs-td :data="inventory.expires">{{inventory.expires}} </vs-td>
           <vs-td :data="inventory.quantity">{{inventory.quantity}} </vs-td>
-          <vs-td :data="inventory.pricePerItem">{{currency + inventory.pricePerItem}} </vs-td>
-          <vs-td :data="inventory.totalPrice">{{currency + inventory.totalPrice}}</vs-td>
+          <vs-td :data="inventory.pricePerItem">{{currency}} {{inventory.pricePerItem}} </vs-td>
+          <vs-td :data="inventory.totalPrice">{{currency}} {{inventory.totalPrice}}</vs-td>
           <vs-td> </vs-td>
         </vs-tr>
       </template>
@@ -236,11 +236,11 @@ export default {
         quantity: {error: false, message: "Please enter a positive quantity."},
         closes: {error: false, message: "Please enter a valid date."}
       },
-      listingQuantity: 0,
-      price: "0",
+      listingQuantity: 1,
+      listingQuantityMax: 0,
+      price: 0.0,
       moreInfo: "",
-      closes: "", // todo: should default to the expiry date of selected item.
-
+      closes: "",
     }
   },
 
@@ -256,6 +256,10 @@ export default {
       return (process.env.NODE_ENV === 'development')
     },
 
+    getInventory() {
+      let filteredInventory = this.inventory.filter(item => (item.quantity>0));
+      return filteredInventory;
+    },
     getProducts(businessId) {
       api.getBusinessProducts(businessId)
         .then((response) => {
@@ -271,8 +275,9 @@ export default {
 
     changeInvVals: function() {
       if (this.invItem !== undefined) {
-        this.price = this.invItem.totalPrice;
-        this.listingQuantity = this.invItem.quantity;
+        this.price = this.invItem.pricePerItem;
+        this.listingQuantityMax = this.invItem.quantity;
+        this.closes = this.invItem.expires + 'T00:00';
       }
     },
     /**
@@ -286,11 +291,6 @@ export default {
       if (this.price < 0 || this.price == "") {
         this.price = 0.00;
         this.newListingErrors.price.error = true;
-        isValid = false;
-      }
-      if (this.listingQuantity < 1) { // In theory this shouldn't occur (because vs-input-number component will set it to the min/max allowed).
-        this.listingQuantity = 0;
-        this.newListingErrors.quantity.error = true;
         isValid = false;
       }
       if (this.closes === "" || this.closes == null) {
@@ -326,29 +326,35 @@ export default {
     createNewListing: function() {
       if (this.validateNewListing()) {
         if (this.errors.length === 0) {
-          api.createListing(store.actingAsBusinessId, this.listingQuantity, this.price, this.moreInfo, this.closes)
-              .then((response) => {
-                this.$log.debug("New listing has been posted:", response.data);
-              }).catch((error) => {
-            if (error.response) {
-              console.log(error);
-              if (error.response.status === 400) {
-                this.$vs.notify( {
-                  title: 'Failed to add a listing',
-                  text: 'Incomplete form, or the product does not exist.',
-                  color: 'danger'
-                });
-              } else if (error.response.status === 403) {
+          api.createListing(store.actingAsBusinessId, this.invItem.id, this.listingQuantity, this.price, this.moreInfo, this.closes)
+            .then((response) => {
+              this.$log.debug("New listing has been posted:", response.data);
+              this.$vs.notify({
+                title: 'Listing successfully posted',
+                color: 'success'
+              });
+              this.newListingPopup = false;
+            })
+            .catch((error) => {
+              if (error.response) {
+                console.log(error);
+                if (error.response.status === 400) {
+                  this.$vs.notify({
+                    title: 'Failed to add a listing',
+                    text: 'Incomplete form, or the product does not exist.',
+                    color: 'danger'
+                  });
+                }
+              }
+              else if (error.response.status === 403) {
                 this.$vs.notify( {
                   title: 'Failed to add a listing',
                   text: 'You do not have the rights to access this business',
                   color: 'danger'
                 });
               }
-              console.log(error.response.status);
-            }
-            this.$log.debug("Error Status:", error)
-          })
+              this.$log.debug("Error Status:", error)
+            });
         }
       }
     },
@@ -376,7 +382,6 @@ export default {
 
     /**
      * Sets display currency based on the user's home country.
-     * User home country is taken from the store.
      */
     setCurrency: function (country) {
       axios.get(`https://restcountries.eu/rest/v2/name/${country}`)
@@ -500,14 +505,7 @@ export default {
     },
     addInventory: function() {
       if (this.errors.length === 0) {
-
-        //automatically calculate the total price
-        if (this.totalPrice >= 0) {
-          this.totalPrice = this.quantity*this.pricePerItem;
-        }
-
-        console.log("DEBUG: " + this.totalPrice);
-
+        this.totalPrice = this.quantity * this.pricePerItem;
         api.createInventory(store.actingAsBusinessId, this.prodId, this.quantity, this.pricePerItem, this.totalPrice, this.manufactureDate, this.sellBy, this.bestBefore, this.listExpiry)
           .then((response) => {
             this.$log.debug("New catalogue item created:", response.data);

@@ -80,11 +80,14 @@ let api = {
     createUser: jest.fn(),
 }
 
+let $log = {
+    debug: jest.fn(),
+}
 
 beforeEach(() => {
     wrapper = mount(Register, {
         propsData: {},
-        mocks: {$route, api},
+        mocks: {$route, api, $log},
         stubs: ['router-link', 'router-view'],
         methods: {},
 

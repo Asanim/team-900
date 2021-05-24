@@ -246,7 +246,6 @@ public class ProductController {
         if (businessDir.mkdirs()) {
             logger.info("Image of business directory did not exist - new directory created of " + businessDir.getPath());
         }
-        System.out.println();
 
         String id = "";
         boolean freeImage = false;

@@ -34,7 +34,7 @@
         <!-- Sub Navigation Bar -->
         <vs-tabs id="business-navbar"> <!-- id="business-navbar" -->
           <vs-tab class="business-nav-item" label="Listings">
-            <BusinessListings/>
+            <BusinessListings :business-id="business.id" :country="user.homeAddress.country"/>
           </vs-tab>
           <vs-tab class="business-nav-item" label="Administrators">
             <BusinessAdministrators :admins="adminList" :pAdminId="business.primaryAdministratorId"/>
@@ -126,7 +126,7 @@ export default Business;
 
 #container {
   display: grid;
-  grid-template-columns: 1fr 1fr 3fr 1fr;
+  grid-template-columns: 1fr 1fr 4fr 1fr;
   grid-template-rows: auto auto;
   grid-column-gap: 1em;
 }

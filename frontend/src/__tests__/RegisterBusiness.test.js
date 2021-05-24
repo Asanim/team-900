@@ -2,6 +2,7 @@ import { mount, createLocalVue } from '@vue/test-utils';
 import Business from '../components/BusinessRegister';
 import Vuesax from 'vuesax';
 import {store} from "../store";
+import {jest} from '@jest/globals'
 
 let wrapper;
 const localVue = createLocalVue();
@@ -9,6 +10,10 @@ localVue.use(Vuesax);
 
 let $vs = {
     notify: jest.fn()
+}
+
+let $log = {
+    debug: jest.fn()
 }
 
 //Mock user
@@ -35,7 +40,7 @@ const checkAgeMethod = jest.spyOn(Business.methods, 'checkAge');
 beforeEach(() => {
     wrapper = mount(Business, {
         propsData: {},
-        mocks: {$vs, store, $router},
+        mocks: {$vs, store, $router, $log},
         stubs: [],
         methods: {},
         localVue,

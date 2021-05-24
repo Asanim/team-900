@@ -14,10 +14,14 @@ let store = {
     actingAsBusinessName: null
 }
 
+let $log = {
+    debug: jest.fn()
+}
+
 beforeEach(() => {
     wrapper = shallowMount(ActingAs, {
         propsData: {},
-        mocks: {store},
+        mocks: {store, $log},
         stubs: ['router-link', 'router-view'],
         methods: {},
         localVue,

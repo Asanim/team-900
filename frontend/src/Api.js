@@ -204,7 +204,7 @@ export default {
      * @param closes Closing date
      */
     createListing: async(businessId, inventoryItemId, quantity, price, moreInfo, closes) =>
-        instance.post(`/businesses/${businessId}/listing`, {inventoryItemId, quantity, price, moreInfo, closes}, {withCredentials: true}),
+        instance.post(`/businesses/${businessId}/listings`, {inventoryItemId, quantity, price, moreInfo, closes}, {withCredentials: true}),
 
     /**
      * modifies catalog product
@@ -255,6 +255,15 @@ export default {
      * @returns {Promise<AxiosResponse<any>>} A response with appropriate status code.
      */
     deletePrimaryImage: (businessId, productId, imageId) => instance.delete(`businesses/${businessId}/products/${productId}/images/${imageId}`, {withCredentials: true}),
+
+    // === BUSINESS INVENTORY LISTINGS
+
+    /**
+     * Retrieves a business' sale listings.
+     * @param businessId Id of business.
+     * @returns {Promise<AxiosResponse<any>>} 200 with (a potentially empty) array of listings. 401, 406 otherwise.
+     */
+    getBusinessListings: (businessId) => instance.get(`/businesses/${businessId}/listings`, {withCredentials: true}),
 
     getBusinessInventory: (businessId) => instance.get(`/businesses/${businessId}/inventory`, {withCredentials: true})
 }
