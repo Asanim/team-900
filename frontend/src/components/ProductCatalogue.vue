@@ -210,11 +210,8 @@
 <script>
 import api from "../Api";
 import {store, mutations} from "../store";
-//import {store} from "../store"
 import ImageUpload from "./ImageUpload";
-//import AddToCatalogue from "./components/AddToCatalogue";
-//        <AddToCatalogue/>
-import AddToCatalogue from "@/components/AddToCatalogue";
+import AddToCatalogue from "./AddToCatalogue";
 
 import axios from "axios";
 const Search = {
