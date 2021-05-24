@@ -145,7 +145,12 @@ const AddToCatalogue = {
         api.createProduct(store.actingAsBusinessId, this.productId, this.productName, this.description, this.manufacturer, this.rrp)
             .then((response) => {
               this.$log.debug("New catalogue item created:", response.data);
-              this.$router.push({path: `/businesses/${store.actingAsBusinessId}/products`});
+              //this.$router.push({path: `/businesses/${store.actingAsBusinessId}/products`});
+              //this.newListingPopup = false;
+              this.$vs.notify({
+                title: 'New catalogue item created',
+                color: 'success'
+              });
             }).catch((error) => {
           if (error.response) {
             console.log(error);
@@ -159,6 +164,9 @@ const AddToCatalogue = {
             console.log(error.response.status);
           }
           this.$log.debug("Error Status:", error)
+        }).finally(() => {
+          this.$vs.loading.close();
+          location.reload();
         });
       }
     },

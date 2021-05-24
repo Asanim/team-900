@@ -22,14 +22,14 @@
         <vs-popup :active.sync="newListingPopup"
                   title="Create a new listing">
           <div class="new-listing-modal">
-
-
+            <AddToCatalogue  />
           </div>
         </vs-popup>
 
+
           <div style="display: flex; margin-bottom: 1em;">
           <div style="display: flex;">
-            <h2 class="title" style="margin: auto;">Sort By: </h2>
+            <h2 class="title" style="margin-top: 10px; margin-right: 10px">Sort By: </h2>
             <select v-model="selected">
               <option disabled value="">Please select one</option>
               <option value="id">ID</option>
@@ -39,13 +39,19 @@
               <option value="created">Date Created</option>
             </select>
             <vs-button @click="sortByName(null, selected, 0);" style="margin: 0 2em 0 0.5em; width: 100px">Sort</vs-button>
-
-            <ImageUpload :businessId=businessId :products=products style="margin: 0 0.5em; width: 100px;"/>
-            <vs-button @click="$router.push(`/businesses/${$route.params.id}/inventory`)" style="margin: 0 0.5em; width: 100px;">Inventory</vs-button>
-
-            <vs-button @click="$router.push(`/addtocatalogue`)" style="margin: 0 0.5em; width: 100px;">Add To Catalogue</vs-button>
           </div>
+            <!-- <vs-button @click="$router.push(`/businesses/${$route.params.id}/inventory`)" style="margin: 0 0.5em; width: 100px;">Inventory</vs-button>
+                            <vs-button @click="$router.push(`/addtocatalogue`)" style="margin: 0 0.5em; width: 100px;">Add To Catalogue</vs-button>
+                    -->
+            <div style="margin: auto 0 auto auto">
+              <div style="display: flex;">
+                <vs-button @click="newListingPopup = true" class="header-button">New Product</vs-button>
 
+                <ImageUpload :businessId=businessId :products=products style="margin: 0 0.5em; width: 100px;"/>
+              </div>
+            </div>
+        </div>
+        <div style="display: flex; margin-bottom: 1em;">
           <!-- If search query returns more than 10 products then this should be active -->
           <tfoot style="margin: auto 0 auto auto">
           <tr>
@@ -57,7 +63,6 @@
           </tr>
           </tfoot>
         </div>
-
 
 
         <div v-if="displaytype">
@@ -120,7 +125,7 @@
                 <template slot="thead" style="background:blue">
                   <vs-th sort-key="id">
                       <div>ID</div>
-                  </vs-th >
+              AddToCatalogue    </vs-th >
                   <vs-th sort-key="name">
                      <div>Product Name</div>
                   </vs-th>
@@ -196,7 +201,6 @@
             </vs-table>
         </div>
       </div>
-
     <footer>
       "Product shoot" by Aameerule is licensed under CC BY 2.0
     </footer>
@@ -208,12 +212,17 @@ import api from "../Api";
 import {store, mutations} from "../store";
 //import {store} from "../store"
 import ImageUpload from "./ImageUpload";
+//import AddToCatalogue from "./components/AddToCatalogue";
+//        <AddToCatalogue/>
+import AddToCatalogue from "@/components/AddToCatalogue";
+
 import axios from "axios";
 const Search = {
   name: "Search",
 
   components: {
-    ImageUpload
+    ImageUpload,
+    AddToCatalogue
   },
   data: function() {
     return {
