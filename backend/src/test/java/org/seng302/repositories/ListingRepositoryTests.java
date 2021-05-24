@@ -27,7 +27,6 @@ import java.util.List;
 /**
  * Integration tests of the user repository.
  */
-
 @ContextConfiguration(classes = TestApplication.class)
 @DataJpaTest
 public class ListingRepositoryTests {

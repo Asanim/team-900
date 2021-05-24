@@ -9,9 +9,11 @@
         text-color="rgba(255,255,255,.6)"
         active-text-color="#FFFFFF">
       <div slot="title">
-        <vs-navbar-title>
-          ReFood
-        </vs-navbar-title>
+        <router-link :to="{path: '/home'}">
+          <vs-navbar-title style="color: white">
+            ReFood
+          </vs-navbar-title>
+        </router-link>
       </div>
 
       <!-- Not Logged In -->
