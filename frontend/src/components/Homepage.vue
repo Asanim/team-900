@@ -41,7 +41,8 @@
           <nav id="newsfeed-navbar">
             <div class="name" style="text-align: center;">
               News Feed
-            </div>
+            </div
+            >
           </nav>
         </main>
   </div>

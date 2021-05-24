@@ -18,7 +18,16 @@
         </div>
         <vs-divider></vs-divider>
 
-        <div style="display: flex; margin-bottom: 1em;">
+
+        <vs-popup :active.sync="newListingPopup"
+                  title="Create a new listing">
+          <div class="new-listing-modal">
+
+
+          </div>
+        </vs-popup>
+
+          <div style="display: flex; margin-bottom: 1em;">
           <div style="display: flex;">
             <h2 class="title" style="margin: auto;">Sort By: </h2>
             <select v-model="selected">
@@ -206,6 +215,7 @@ const Search = {
   },
   data: function() {
     return {
+      newListingPopup: false,
       errors: [],
       toggle: [1,1,1,1,1],
       searchbar: "",
@@ -488,6 +498,14 @@ const Search = {
       }
     }
 
+  },
+
+  /**
+   * Closes the new product modal, and reset error fields.
+   */
+  closeNewListing: function() {
+    this.newListingPopup = false;
+    //Object.values(this.newListingErrors).forEach(input => input.error = false);
   },
 
   computed: {
