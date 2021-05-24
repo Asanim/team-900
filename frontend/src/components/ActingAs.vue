@@ -1,6 +1,6 @@
 <template>
-  <div class="userInfo">
-    <h2 class = "dgaa" v-if="getUserRole() === 'DGAA' || getUserRole() === 'GAA'"><span>{{getUserRole()}}</span></h2>
+  <div class="userInfo" style="display: flex; margin-left: 10px;">
+    <h2 style="margin-left: 10px; margin-top: 10px" class = "dgaa" v-if="getUserRole() === 'DGAA' || getUserRole() === 'GAA'">{{getUserRole()}}</h2>
 
     <div>
       <vs-dropdown vs-trigger-click>
@@ -8,6 +8,7 @@
           <span class="user">{{getUserName()}}</span>
           <vs-avatar v-if="getUserName() !== null" size="30" name="avatar"></vs-avatar>
         </div>
+
         <div v-else class="acting-display">
           <span class="user">{{getActingAsBusinessName()}}</span>
           <vs-avatar v-if="getUserName() !== null" icon="store" size="30" name="avatar">
