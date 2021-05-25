@@ -12,13 +12,13 @@
         <vs-popup classContent="popup-example"  title="Add a product to your inventory" :active.sync="addNewInv">
         <div class="form-group required vs-col" vs-order="1" id="firstColModal">
             <div class="row">
-              <label for="prodId">Product</label>
+              <label for="prodId">Product *</label>
               <vs-select id="prodId" class="selectExample" v-model="prodId" v-on:change="autofill">
                 <vs-select-item :value="product.id" :text="product.name" v-for="product in products" v-bind:href="product.id" :key="product.id"/>
               </vs-select>
             </div>
             <div class="row">
-              <label for="pricePerItem">Price per item</label>
+              <label for="pricePerItem">Price per item *</label>
               <vs-input
                   :danger="(errors.includes(pricePerItem))"
                   danger-text="Price per item must be greater than zero and numeric."
@@ -27,8 +27,18 @@
                   placeholder="Price per item"
                   v-model="pricePerItem"/>
             </div>
+          <div class="row">
+            <label for="totalPrice">Total price *</label>
+            <vs-input
+                :danger="(errors.includes(totalPrice))"
+                danger-text="Total price must be greater than zero and numeric."
+                class="inputx"
+                id="totalPrice"
+                placeholder="Price per item"
+                v-model="totalPrice"/>
+          </div>
             <div class="row">
-              <label for="quantity">Quantity</label>
+              <label for="quantity">Quantity *</label>
               <vs-input-number
                   :danger="(errors.includes(quantity))"
                   danger-text="Quantity must be greater than zero."
@@ -37,20 +47,10 @@
                   id="quantity"
                   v-model="quantity"/>
             </div>
-            <div class="row">
-              <label for="description">Description</label>
-              <vs-textarea
-                  width="200px"
-                  height="50px"
-                  class="description-textarea"
-                  id="description"
-                  v-model="invDescription">
-              </vs-textarea>
-            </div>
           </div>
           <div class="form-group required vs-col" vs-order="2" id="secondColModal">
             <div class="row">
-              <label for="bestBefore">Best before</label>
+              <label for="bestBefore">Best before *</label>
               <vs-input
                   :danger="(errors.includes('past-best'))"
                   danger-text="Date cannot be in past"
@@ -60,7 +60,7 @@
                   v-model="bestBefore"/>
             </div>
             <div class="row">
-              <label for="listingExpiry">Listing expiry</label>
+              <label for="listingExpiry">Listing expiry *</label>
               <vs-input
                   :danger="(errors.includes('past-expiry'))"
                   danger-text="Expiry date is required and cannot be in past"
@@ -70,7 +70,7 @@
                   v-model="listExpiry"/>
             </div>
             <div class="row">
-              <label for="manufactureDate">Manufacture date</label>
+              <label for="manufactureDate">Manufacture date *</label>
               <vs-input
                   :danger="(errors.includes('future-manu'))"
                   danger-text="Date cannot be in the future"
@@ -80,7 +80,7 @@
                   v-model="manufactureDate"/>
             </div>
             <div class="row">
-              <label for="sellBy">Sell by</label>
+              <label for="sellBy">Sell by *</label>
               <vs-input
                   :danger="(errors.includes('past-sell'))"
                   danger-text="Date cannot be in past"
@@ -90,7 +90,7 @@
                   v-model="sellBy"/>
             </div>
           </div>
-          <div class="form-group required vs-col" align="center" id="addButton" @click="addInventory(); checkForm()">
+          <div class="form-group required vs-col" align="center" id="addButton" @click="addInventory()">
             <vs-button>Add product</vs-button>
           </div>
         </vs-popup>
@@ -103,14 +103,16 @@
       <div class="new-listing-modal">
         <div class="row">
           <label for="InvId">Inventory Item ID</label>
+          <!-- TODO: add v-on:change to change Product name -->
           <vs-select id="InvId" class="selectExample" v-model="invItem" v-on:change="changeInvVals">
-            <vs-select-item :value="invItem" :text="' (' + invItem.id +') '+ invItem.productName" v-for="invItem in getInventory()" v-bind:href="invItem.id" :key="invItem.id"/>
+            <vs-select-item :value="invItem" :text="' (' + invItem.id +') '+ invItem.productName" v-for="invItem in inventory" v-bind:href="invItem.id" :key="invItem.id"/>
           </vs-select>
         </div>
         <div id="listing-product-name">
           <div class="sub-header">Inventory Item Name</div>
           <div style="font-size: 18px; text-align: left; font-weight: bold" v-if="invItem.length !== 0">{{ invItem.product.name }}</div>
           <div style="font-size: 10px; text-align: left" v-if="invItem.length !== 0">Price {{ invItem.pricePerItem }}</div>
+          <div style="font-size: 10px; text-align: left" v-if="invItem.length !== 0">Sell By {{ invItem.sellBy }}</div>
           <div style="font-size: 10px; text-align: left" v-if="invItem.length !== 0">Qty {{ invItem.quantity }}</div>
 
           <div style="font-size: 18px;" v-else></div>
@@ -128,8 +130,7 @@
             <label style="font-size: 13.6px">Quantity</label>
             <vs-input-number
                 v-model="listingQuantity"
-                :max="listingQuantityMax"
-                :min="1"></vs-input-number>
+                :max="10"></vs-input-number> <!-- todo: max based on current inventory amount -->
           </div>
           <div v-show="newListingErrors.quantity.error" style="font-size: 10px; color: #FF4757; text-align: center; position: absolute">{{ newListingErrors.quantity.message }}</div>
         </div>
@@ -161,11 +162,8 @@
               :maxItems="5"
               stripe>
       <template class="table-head" slot="thead" >
-<!--        <vs-th sort-key="productId" style="border-radius: 8px 0 0 0"> ID </vs-th>-->
-<!--        -->
         <vs-th sort-key="id" style="border-radius: 8px 0 0 0; width: 40px;"> ID</vs-th>
         <vs-th sort-key="productId" > Image </vs-th>
-
         <vs-th sort-key="productName"> Product </vs-th>
         <vs-th class="dateInTable" sort-key="manufactured"> Manufactured </vs-th>
         <vs-th class="dateInTable" sort-key="sellBy"> Sell By </vs-th>
@@ -184,7 +182,7 @@
           <div style="height: 80px">
             <img v-if="inventory.product.primaryImagePath != null && isDevelopment()" style="width: 100%; height: 100%;   border-radius: 1em;" v-bind:src="require('../../../backend/src/main/resources/media/images/businesses/' + getImgUrl(inventory.product))"/>
             <img v-if="inventory.product.primaryImagePath != null && !isDevelopment()" style="width: 100%; height: 100%;   border-radius: 1em;" v-bind:src="getImgUrl(inventory.product)"/>
-            <img v-if="!inventory.product.primaryImagePath" style="height: 100%; border-radius: 1em;" v-bind:src="require('../../public/ProductShoot.jpg')"/>
+            <img v-if="!inventory.product.primaryImagePath" style="width: 100%; height: 100%;   border-radius: 1em;" v-bind:src="require('../../public/ProductShoot.jpg')"/>
           </div>
             </vs-td>
           <vs-td :data="inventory.productName"> {{inventory.productName}} </vs-td>
@@ -193,8 +191,8 @@
           <vs-td :data="inventory.bestBefore">{{inventory.bestBefore}} </vs-td>
           <vs-td :data="inventory.expires">{{inventory.expires}} </vs-td>
           <vs-td :data="inventory.quantity">{{inventory.quantity}} </vs-td>
-          <vs-td :data="inventory.pricePerItem">{{currency}} {{inventory.pricePerItem}} </vs-td>
-          <vs-td :data="inventory.totalPrice">{{currency}} {{inventory.totalPrice}}</vs-td>
+          <vs-td :data="inventory.pricePerItem">{{currency}}{{inventory.pricePerItem}} </vs-td>
+          <vs-td :data="inventory.totalPrice">{{currency}}{{inventory.totalPrice}}</vs-td>
           <vs-td> </vs-td>
         </vs-tr>
       </template>
@@ -224,7 +222,6 @@ export default {
       totalPrice: 0.0,
       quantity: 0,
 
-      invDescription: '',
       bestBefore: '',
       listExpiry: '',
       manufactureDate: '',
@@ -238,11 +235,11 @@ export default {
         quantity: {error: false, message: "Please enter a positive quantity."},
         closes: {error: false, message: "Please enter a valid date."}
       },
-      listingQuantity: 1,
-      listingQuantityMax: 0,
-      price: 0.0,
+      listingQuantity: 0,
+      price: "0",
       moreInfo: "",
-      closes: "",
+      closes: "", // todo: should default to the expiry date of selected item.
+
     }
   },
 
@@ -258,10 +255,6 @@ export default {
       return (process.env.NODE_ENV === 'development')
     },
 
-    getInventory() {
-      let filteredInventory = this.inventory.filter(item => (item.quantity>0));
-      return filteredInventory;
-    },
     getProducts(businessId) {
       api.getBusinessProducts(businessId)
         .then((response) => {
@@ -277,9 +270,8 @@ export default {
 
     changeInvVals: function() {
       if (this.invItem !== undefined) {
-        this.price = this.invItem.pricePerItem;
-        this.listingQuantityMax = this.invItem.quantity;
-        this.closes = this.invItem.expires + 'T00:00';
+        this.price = this.invItem.totalPrice;
+        this.listingQuantity = this.invItem.quantity;
       }
     },
     /**
@@ -293,6 +285,11 @@ export default {
       if (this.price < 0 || this.price == "") {
         this.price = 0.00;
         this.newListingErrors.price.error = true;
+        isValid = false;
+      }
+      if (this.listingQuantity < 1) { // In theory this shouldn't occur (because vs-input-number component will set it to the min/max allowed).
+        this.listingQuantity = 0;
+        this.newListingErrors.quantity.error = true;
         isValid = false;
       }
       if (this.closes === "" || this.closes == null) {
@@ -331,29 +328,25 @@ export default {
           api.createListing(store.actingAsBusinessId, this.invItem.id, this.listingQuantity, this.price, this.moreInfo, this.closes)
             .then((response) => {
               this.$log.debug("New listing has been posted:", response.data);
-              this.$vs.notify({
-                title: 'Listing successfully posted',
-                color: 'success'
-              });
-              this.newListingPopup = false;
             })
             .catch((error) => {
               if (error.response) {
                 console.log(error);
                 if (error.response.status === 400) {
-                  this.$vs.notify({
+                  this.$vs.notify( {
                     title: 'Failed to add a listing',
                     text: 'Incomplete form, or the product does not exist.',
                     color: 'danger'
                   });
                 }
-              }
-              else if (error.response.status === 403) {
-                this.$vs.notify( {
-                  title: 'Failed to add a listing',
-                  text: 'You do not have the rights to access this business',
-                  color: 'danger'
-                });
+                else if (error.response.status === 403) {
+                  this.$vs.notify( {
+                    title: 'Failed to add a listing',
+                    text: 'You do not have the rights to access this business',
+                    color: 'danger'
+                  });
+                }
+                console.log(error.response.status);
               }
               this.$log.debug("Error Status:", error)
             });
@@ -422,7 +415,6 @@ export default {
         return false;
       }
 
-
       if (this.bestBefore === '' && this.sellBy === '' && this.manufactureDate === ''
           && this.listExpiry === '') {
         this.errors.push('no-dates');
@@ -473,9 +465,6 @@ export default {
       if (this.quantity <= 0) {
         this.errors.push(this.quantity);
       }
-      if (this.invDescription.length > 250) {
-        this.errors.push('no-desc');
-      }
       if (this.errors.includes('no-dates')) {
         this.$vs.notify({
           title: 'Failed to create inventory item',
@@ -504,11 +493,21 @@ export default {
           color: 'danger'
         });
       }
-
+      if (this.errors.length > 0) {
+        return false;
+      }
+      return true;
     },
     addInventory: function() {
-      if (this.errors.length === 0) {
-        this.totalPrice = this.quantity * this.pricePerItem;
+      if (this.checkForm()) {
+
+        // //automatically calculate the total price
+        // if (this.totalPrice >= 0) {
+        //   this.totalPrice = this.quantity*this.pricePerItem;
+        // }
+
+        console.log("DEBUG: " + this.totalPrice);
+
         api.createInventory(store.actingAsBusinessId, this.prodId, this.quantity, this.pricePerItem, this.totalPrice, this.manufactureDate, this.sellBy, this.bestBefore, this.listExpiry)
           .then((response) => {
             this.$log.debug("New catalogue item created:", response.data);
@@ -537,6 +536,7 @@ export default {
                   });
                 }
 
+
               } else if (error.response.status === 403) {
                 this.$vs.notify( {
                   title: 'Failed to add an inventory item',
@@ -550,7 +550,7 @@ export default {
                   color: 'danger'
                 });
               }
-                console.log(error.response.status);
+              console.log(error.response.status);
             }
           this.$log.debug("Error Status:", error)
         })
@@ -567,13 +567,9 @@ export default {
         }
         console.log(this.products[prodInd])
         this.pricePerItem = this.products[prodInd]["recommendedRetailPrice"];
-        this.invDescription = this.products[prodInd]["description"];
       }
     },
 
-    /**
-     * Gets business id user is acting as
-     **/
     getActingAsBusinessId() {
       return store.actingAsBusinessId;
     },
