@@ -14,6 +14,7 @@
             ReFood
           </vs-navbar-title>
         </router-link>
+
       </div>
 
       <!-- Not Logged In -->

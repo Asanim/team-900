@@ -103,16 +103,14 @@
       <div class="new-listing-modal">
         <div class="row">
           <label for="InvId">Inventory Item ID</label>
-          <!-- TODO: add v-on:change to change Product name -->
           <vs-select id="InvId" class="selectExample" v-model="invItem" v-on:change="changeInvVals">
-            <vs-select-item :value="invItem" :text="' (' + invItem.id +') '+ invItem.productName" v-for="invItem in inventory" v-bind:href="invItem.id" :key="invItem.id"/>
+            <vs-select-item :value="invItem" :text="' (' + invItem.id +') '+ invItem.productName" v-for="invItem in getInventory()" v-bind:href="invItem.id" :key="invItem.id"/>
           </vs-select>
         </div>
         <div id="listing-product-name">
           <div class="sub-header">Inventory Item Name</div>
           <div style="font-size: 18px; text-align: left; font-weight: bold" v-if="invItem.length !== 0">{{ invItem.product.name }}</div>
           <div style="font-size: 10px; text-align: left" v-if="invItem.length !== 0">Price {{ invItem.pricePerItem }}</div>
-          <div style="font-size: 10px; text-align: left" v-if="invItem.length !== 0">Sell By {{ invItem.sellBy }}</div>
           <div style="font-size: 10px; text-align: left" v-if="invItem.length !== 0">Qty {{ invItem.quantity }}</div>
 
           <div style="font-size: 18px;" v-else></div>
@@ -130,7 +128,8 @@
             <label style="font-size: 13.6px">Quantity</label>
             <vs-input-number
                 v-model="listingQuantity"
-                :max="10"></vs-input-number> <!-- todo: max based on current inventory amount -->
+                :max="listingQuantityMax"
+                :min="1"></vs-input-number>
           </div>
           <div v-show="newListingErrors.quantity.error" style="font-size: 10px; color: #FF4757; text-align: center; position: absolute">{{ newListingErrors.quantity.message }}</div>
         </div>
@@ -162,8 +161,11 @@
               :maxItems="5"
               stripe>
       <template class="table-head" slot="thead" >
+<!--        <vs-th sort-key="productId" style="border-radius: 8px 0 0 0"> ID </vs-th>-->
+<!--        -->
         <vs-th sort-key="id" style="border-radius: 8px 0 0 0; width: 40px;"> ID</vs-th>
         <vs-th sort-key="productId" > Image </vs-th>
+
         <vs-th sort-key="productName"> Product </vs-th>
         <vs-th class="dateInTable" sort-key="manufactured"> Manufactured </vs-th>
         <vs-th class="dateInTable" sort-key="sellBy"> Sell By </vs-th>
@@ -420,6 +422,7 @@ export default {
         return false;
       }
 
+
       if (this.bestBefore === '' && this.sellBy === '' && this.manufactureDate === ''
           && this.listExpiry === '') {
         this.errors.push('no-dates');
@@ -534,7 +537,6 @@ export default {
                   });
                 }
 
-
               } else if (error.response.status === 403) {
                 this.$vs.notify( {
                   title: 'Failed to add an inventory item',
@@ -548,7 +550,7 @@ export default {
                   color: 'danger'
                 });
               }
-              console.log(error.response.status);
+                console.log(error.response.status);
             }
           this.$log.debug("Error Status:", error)
         })
@@ -569,6 +571,9 @@ export default {
       }
     },
 
+    /**
+     * Gets business id user is acting as
+     **/
     getActingAsBusinessId() {
       return store.actingAsBusinessId;
     },
