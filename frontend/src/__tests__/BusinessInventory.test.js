@@ -45,12 +45,11 @@ let $route = {
 
 beforeEach(() => {
    wrapper = mount(BusinessInventory, {
-
        mocks: {$log, $route},
        stubs: {},
        methods: {},
        localVue,
-   })
+   });
 
    const getBusinessInventory = jest.spyOn(BusinessInventory.methods, "getBusinessInventory");
    getBusinessInventory.mockResolvedValue([]);

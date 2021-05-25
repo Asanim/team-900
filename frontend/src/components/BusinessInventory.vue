@@ -191,8 +191,8 @@
           <vs-td :data="inventory.bestBefore">{{inventory.bestBefore}} </vs-td>
           <vs-td :data="inventory.expires">{{inventory.expires}} </vs-td>
           <vs-td :data="inventory.quantity">{{inventory.quantity}} </vs-td>
-          <vs-td :data="inventory.pricePerItem">{{currency + inventory.pricePerItem}} </vs-td>
-          <vs-td :data="inventory.totalPrice">{{currency + inventory.totalPrice}}</vs-td>
+          <vs-td :data="inventory.pricePerItem">{{currency}}{{inventory.pricePerItem}} </vs-td>
+          <vs-td :data="inventory.totalPrice">{{currency}}{{inventory.totalPrice}}</vs-td>
           <vs-td> </vs-td>
         </vs-tr>
       </template>
@@ -325,29 +325,31 @@ export default {
     createNewListing: function() {
       if (this.validateNewListing()) {
         if (this.errors.length === 0) {
-          api.createListing(store.actingAsBusinessId, this.listingQuantity, this.price, this.moreInfo, this.closes)
-              .then((response) => {
-                this.$log.debug("New listing has been posted:", response.data);
-              }).catch((error) => {
-            if (error.response) {
-              console.log(error);
-              if (error.response.status === 400) {
-                this.$vs.notify( {
-                  title: 'Failed to add a listing',
-                  text: 'Incomplete form, or the product does not exist.',
-                  color: 'danger'
-                });
-              } else if (error.response.status === 403) {
-                this.$vs.notify( {
-                  title: 'Failed to add a listing',
-                  text: 'You do not have the rights to access this business',
-                  color: 'danger'
-                });
+          api.createListing(store.actingAsBusinessId, this.invItem.id, this.listingQuantity, this.price, this.moreInfo, this.closes)
+            .then((response) => {
+              this.$log.debug("New listing has been posted:", response.data);
+            })
+            .catch((error) => {
+              if (error.response) {
+                console.log(error);
+                if (error.response.status === 400) {
+                  this.$vs.notify( {
+                    title: 'Failed to add a listing',
+                    text: 'Incomplete form, or the product does not exist.',
+                    color: 'danger'
+                  });
+                }
+                else if (error.response.status === 403) {
+                  this.$vs.notify( {
+                    title: 'Failed to add a listing',
+                    text: 'You do not have the rights to access this business',
+                    color: 'danger'
+                  });
+                }
+                console.log(error.response.status);
               }
-              console.log(error.response.status);
-            }
-            this.$log.debug("Error Status:", error)
-          })
+              this.$log.debug("Error Status:", error)
+            });
         }
       }
     },
@@ -375,7 +377,6 @@ export default {
 
     /**
      * Sets display currency based on the user's home country.
-     * User home country is taken from the store.
      */
     setCurrency: function (country) {
       axios.get(`https://restcountries.eu/rest/v2/name/${country}`)

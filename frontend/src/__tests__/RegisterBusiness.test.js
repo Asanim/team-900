@@ -11,6 +11,10 @@ let $vs = {
     notify: jest.fn()
 }
 
+let $log = {
+    debug: jest.fn()
+}
+
 //Mock user
 const mockUser = {
     "id": 5,
@@ -35,7 +39,7 @@ const checkAgeMethod = jest.spyOn(Business.methods, 'checkAge');
 beforeEach(() => {
     wrapper = mount(Business, {
         propsData: {},
-        mocks: {$vs, store, $router},
+        mocks: {$vs, store, $router, $log},
         stubs: [],
         methods: {},
         localVue,

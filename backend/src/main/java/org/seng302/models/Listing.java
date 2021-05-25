@@ -2,7 +2,6 @@ package org.seng302.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import org.seng302.models.requests.NewInventoryRequest;
 import org.seng302.models.requests.NewListingRequest;
 
 import javax.xml.bind.ValidationException;
@@ -29,7 +28,7 @@ public class Listing {
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date created;
 
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date closes;
 
     /**

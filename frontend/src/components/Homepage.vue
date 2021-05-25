@@ -193,7 +193,7 @@ export default Homepage;
 <style scoped>
 #container {
   display: grid;
-  grid-template-columns: 1fr 1fr 3fr 1fr;
+  grid-template-columns: 1fr 1fr 4fr 1fr;
   grid-template-rows: auto auto;
   grid-column-gap: 1em;
 }

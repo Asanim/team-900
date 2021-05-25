@@ -213,7 +213,7 @@ export default Users;
 
 #container {
   display: grid;
-  grid-template-columns: 1fr 1fr 3fr 1fr;
+  grid-template-columns: 1fr 1fr 4fr 1fr;
   grid-template-rows: 1fr auto;
   grid-column-gap: 1em;
   margin: auto;
@@ -378,6 +378,7 @@ main {
 }
 
 .card >>> .card-description {
+  grid-column: 1/3;
   font-size: 12px;
   padding: 0.5em 0 0.5em 0;
 }

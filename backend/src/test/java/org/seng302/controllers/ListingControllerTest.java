@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.seng302.TestApplication;
 import org.seng302.models.*;
+import org.seng302.models.requests.NewListingRequest;
 import org.seng302.models.requests.UserIdRequest;
 import org.seng302.repositories.BusinessRepository;
 import org.seng302.repositories.InventoryRepository;
@@ -22,6 +23,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -60,6 +63,7 @@ public class ListingControllerTest {
     private Product product1;
     private Inventory inventory1;
     private Listing listing1;
+    private NewListingRequest newListingRequest;
 
     @BeforeEach
     public void setup() throws NoSuchAlgorithmException {
@@ -70,15 +74,11 @@ public class ListingControllerTest {
         adminUser = new User("Gannon", "YEP", "Tynemouth", "Exclusive", "6th generation intranet", "gtynemouth1@indiatimes.com","1996-03-31","+62 140 282 1784",new Address("32", "Little Fleur Trail", "Christchurch" ,"Canterbury", "New Zealand", "8080"),"HGD0nAJNjSD");
         adminUser.setId(3L);
 
-
-
-
         Address a1 = new Address("1","Kropf Court","Jequitinhonha", null, "Brazil","39960-000");
         business = new Business("Business1", "Test Business 1", a1, BusinessType.ACCOMMODATION_AND_FOOD_SERVICES);
         business.setId(1L);
         business.createBusiness(ownerUser);
         business.getAdministrators().add(adminUser);
-
 
         product1 = new Product("07-4957066", 1, "Spoon", "Soup, Plastic", "Good Manufacturer", 14.69, new Date());
 
@@ -91,7 +91,7 @@ public class ListingControllerTest {
         Date beforeDate = beforeCalendar.getTime();
 
         inventory1 = new Inventory("07-4957066", 1, 10, 2.0, 20.0, beforeDate, laterDate, laterDate, laterDate);
-
+        newListingRequest = new NewListingRequest(inventory1.getId(), 2, 2.99, "more info", laterDate);
         listing1 = new Listing(inventory1, 5, 2.0, "Seller may be interested in offers", new Date(), laterDate);
 
         assertThat(business.getAdministrators().size()).isEqualTo(2);
@@ -192,16 +192,14 @@ public class ListingControllerTest {
         User forbiddenUser = new User("email@email.com", "password", Role.USER);
 
         Mockito.when(businessRepository.findBusinessById(business.getId())).thenReturn(business);
-
         //Have as param in here since the request object is null in the test
         Mockito.when(productRepository.findProductByIdAndBusinessId(null, business.getId())).thenReturn(product1);
-
         Mockito.when(inventoryRepository.findInventoryById(inventory1.getId())).thenReturn(inventory1);
 
         mvc.perform(post("/businesses/{id}/listings", business.getId())
                 .sessionAttr(User.USER_SESSION_ATTRIBUTE, forbiddenUser)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(listing1)))
+                .content(mapper.writeValueAsString(newListingRequest)))
                 .andExpect(status().isForbidden());
     }
 
@@ -218,13 +216,13 @@ public class ListingControllerTest {
         mvc.perform(post("/businesses/{id}/listings", business.getId())
                 .sessionAttr(User.USER_SESSION_ATTRIBUTE, DGAAUser)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(listing1)))
+                .content(mapper.writeValueAsString(newListingRequest)))
                 .andExpect(status().isCreated());
 
         mvc.perform(post("/businesses/{id}/listings", business.getId())
                 .sessionAttr(User.USER_SESSION_ATTRIBUTE, GAAUser)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(listing1)))
+                .content(mapper.writeValueAsString(newListingRequest)))
                 .andExpect(status().isCreated());
     }
 
@@ -239,7 +237,7 @@ public class ListingControllerTest {
         mvc.perform(post("/businesses/{id}/listings", business.getId())
                 .sessionAttr(User.USER_SESSION_ATTRIBUTE, adminUser)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(listing1)))
+                .content(mapper.writeValueAsString(newListingRequest)))
                 .andExpect(status().isCreated());
 
         User businessSecondaryAdmin = new User("email@email.com", "password", Role.USER);
@@ -247,7 +245,7 @@ public class ListingControllerTest {
         mvc.perform(post("/businesses/{id}/listings", business.getId())
                 .sessionAttr(User.USER_SESSION_ATTRIBUTE, businessSecondaryAdmin)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(listing1)))
+                .content(mapper.writeValueAsString(newListingRequest)))
                 .andExpect(status().isCreated());
     }
 
@@ -307,7 +305,7 @@ public class ListingControllerTest {
     public void testPostWithQuantityEqualToInventoryQuantity() throws Exception {
         //inventory quantity is 10
         inventory1.setQuantity(8);
-        listing1.setQuantity(8);
+        newListingRequest.setQuantity(8);
         Mockito.when(businessRepository.findBusinessById(business.getId())).thenReturn(business);
         Mockito.when(productRepository.findProductByIdAndBusinessId(null, business.getId())).thenReturn(product1);
         Mockito.when(inventoryRepository.findInventoryById(inventory1.getId())).thenReturn(inventory1);
@@ -315,7 +313,7 @@ public class ListingControllerTest {
         mvc.perform(post("/businesses/{id}/listings", business.getId())
                 .sessionAttr(User.USER_SESSION_ATTRIBUTE, adminUser)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(listing1)))
+                .content(mapper.writeValueAsString(newListingRequest)))
                 .andExpect(status().isCreated());
 
     }

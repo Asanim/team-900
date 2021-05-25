@@ -124,7 +124,6 @@ const BusinessRegister = {
         this.errors.push('businessType');
       }
 
-
       if (this.errors.length >= 1) {
         if(this.errors.includes("dob") && this.errors.length === 1){
           this.$vs.notify({title:'Failed to create business', text:'You are too young to create a ReFood account.', color:'danger'});
@@ -159,23 +158,25 @@ const BusinessRegister = {
         };
 
         api.createBusiness(this.businessName, this.description, businessAddress, this.businessType)
-            .then((response) => {
-              api.actAsBusiness(response.data.businessId)
-                  .then((busResponse) => {
-                    this.$log.debug("New business created:", busResponse.data);
-                    mutations.setActingAsBusiness(response.data.businessId, this.businessName);
-                    this.$router.push({path: `/home`}).catch(() => {console.log("NavigationDuplicated Warning: same route.")});
-                  }).catch((error) => {
+          .then((response) => {
+            api.actAsBusiness(response.data.businessId)
+              .then((busResponse) => {
+                this.$log.debug("New business created:", busResponse.data);
+                mutations.setActingAsBusiness(response.data.businessId, this.businessName);
+                this.$router.push({path: `/home`}).catch(() => {console.log("NavigationDuplicated Warning: same route.")});
+              })
+              .catch((error) => {
                 this.$log.debug(error.response.message);
               });
-            }).catch((error) => {
-          if(error.response) {
-            this.$log.debug(error.response.status);
-            this.$log.debug(error.response.message);
-            this.errors.push("Access token is missing/invalid");
-          }
-          this.$log.debug("Error Status:", error)
-        });
+          })
+          .catch((error) => {
+            if(error.response) {
+              this.$log.debug(error.response.status);
+              this.$log.debug(error.response.message);
+              this.errors.push("Access token is missing/invalid");
+            }
+            this.$log.debug("Error Status:", error)
+          });
       }},
 
     /**
