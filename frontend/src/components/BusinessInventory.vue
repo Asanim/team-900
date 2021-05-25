@@ -180,9 +180,9 @@
           <vs-td id="productIdCol" :data="inventory.productId">
           {{inventory.productId}}
           <div style="height: 80px">
-            <img v-if="inventory.product.primaryImagePath != null && isDevelopment()" style="width: 100%; height: 100%;   border-radius: 1em;" v-bind:src="require('../../../backend/src/main/resources/media/images/businesses/' + getImgUrl(inventory.product))"/>
-            <img v-if="inventory.product.primaryImagePath != null && !isDevelopment()" style="width: 100%; height: 100%;   border-radius: 1em;" v-bind:src="getImgUrl(inventory.product)"/>
-            <img v-if="!inventory.product.primaryImagePath" style="width: 100%; height: 100%;   border-radius: 1em;" v-bind:src="require('../../public/ProductShoot.jpg')"/>
+            <img v-if="inventory.product.primaryImagePath != null && isDevelopment()" style="height: 100%;   border-radius: 1em;" v-bind:src="require('../../../backend/src/main/resources/media/images/businesses/' + getImgUrl(inventory.product))"/>
+            <img v-if="inventory.product.primaryImagePath != null && !isDevelopment()" style="height: 100%;   border-radius: 1em;" v-bind:src="getImgUrl(inventory.product)"/>
+            <img v-if="!inventory.product.primaryImagePath" style="height: 100%;   border-radius: 1em;" v-bind:src="require('../../public/ProductShoot.jpg')"/>
           </div>
             </vs-td>
           <vs-td :data="inventory.productName"> {{inventory.productName}} </vs-td>
