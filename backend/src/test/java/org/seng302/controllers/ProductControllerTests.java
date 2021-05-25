@@ -41,7 +41,6 @@ import java.util.List;
 
 @WebMvcTest(controllers = ProductController.class)
 @ContextConfiguration(classes = TestApplication.class)
-@RunWith(SpringRunner.class)
 public class ProductControllerTests {
 
     @Autowired

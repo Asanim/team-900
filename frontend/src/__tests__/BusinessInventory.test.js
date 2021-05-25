@@ -44,24 +44,24 @@ let $route = {
 }
 
 beforeEach(() => {
-   wrapper = mount(BusinessInventory, {
-       mocks: {$log, $route},
-       stubs: {},
-       methods: {},
-       localVue,
-   });
+    wrapper = mount(BusinessInventory, {
+        mocks: {$log, $route},
+        stubs: {},
+        methods: {},
+        localVue,
+    });
 
-   const getBusinessInventory = jest.spyOn(BusinessInventory.methods, "getBusinessInventory");
-   getBusinessInventory.mockResolvedValue([]);
+    const getBusinessInventory = jest.spyOn(BusinessInventory.methods, "getBusinessInventory");
+    getBusinessInventory.mockResolvedValue([]);
 
-   const getSession = jest.spyOn(BusinessInventory.methods, 'getSession');
-   //TODO: Setup this properly since this is temp fix so it can be merged
-   const getBusinessProducts = jest.spyOn(BusinessInventory.methods, "getProducts");
+    const getSession = jest.spyOn(BusinessInventory.methods, 'getSession');
+    //TODO: Setup this properly since this is temp fix so it can be merged
+    const getBusinessProducts = jest.spyOn(BusinessInventory.methods, "getProducts");
 
-   getSession.mockResolvedValue(() => {
-       wrapper.vm.currency = "$";
-   });
-   getBusinessProducts.mockResolvedValue([]);
+    getSession.mockResolvedValue(() => {
+        wrapper.vm.currency = "$";
+    });
+    getBusinessProducts.mockResolvedValue([]);
 });
 
 afterEach(() => {
@@ -75,18 +75,19 @@ describe('Component', () => {
 });
 
 describe('New sale listing modal tests', () => {
-   beforeEach(async () => {
-       wrapper.vm.newListingPopup = true;
-       await wrapper.vm.$nextTick();
-       expect(wrapper.find(".new-listing-modal")).toBeTruthy();
-   });
+    beforeEach(async () => {
+        wrapper.vm.newListingPopup = true;
+        await wrapper.vm.$nextTick();
+        expect(wrapper.find(".new-listing-modal")).toBeTruthy();
+    });
 
-   test("No changes to input fields - reject form", () => {
-       expect(wrapper.vm.validateNewListing()).toBeFalsy();
-       expect(wrapper.vm.newListingErrors.price.error).toBe(true);
-       expect(wrapper.vm.newListingErrors.quantity.error).toBe(false);
-       expect(wrapper.vm.newListingErrors.closes.error).toBe(true);
-   });
+    test("No changes to input fields - reject form", () => {
+        expect(wrapper.vm.validateNewListing()).toBeFalsy();
+        console.log("DEBUG: " + wrapper.vm.newListingErrors.price);
+        expect(wrapper.vm.newListingErrors.price.error).toBe(true);
+        expect(wrapper.vm.newListingErrors.quantity.error).toBe(false);
+        expect(wrapper.vm.newListingErrors.closes.error).toBe(true);
+    });
 
     test("Invalid form with negative price", () => {
         wrapper.vm.price = -1.50;

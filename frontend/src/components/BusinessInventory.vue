@@ -235,8 +235,8 @@ export default {
         quantity: {error: false, message: "Please enter a positive quantity."},
         closes: {error: false, message: "Please enter a valid date."}
       },
-      listingQuantity: 0,
-      price: "0",
+      listingQuantity: 1,
+      price: 0.0,
       moreInfo: "",
       closes: "", // todo: should default to the expiry date of selected item.
 
@@ -270,8 +270,9 @@ export default {
 
     changeInvVals: function() {
       if (this.invItem !== undefined) {
-        this.price = this.invItem.totalPrice;
-        this.listingQuantity = this.invItem.quantity;
+        this.price = this.invItem.pricePerItem;
+        this.listingQuantityMax = this.invItem.quantity;
+        this.closes = this.invItem.expires + 'T00:00';
       }
     },
     /**
