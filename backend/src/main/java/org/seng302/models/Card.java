@@ -1,6 +1,7 @@
 package org.seng302.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 //import org.seng302.models.requests.NewCardRequest;
 
@@ -40,6 +41,8 @@ public class Card {
     private Date created;
     private String keywords; //comma delimited? Or use a List?
 
+    @JsonIgnore
+    @Column(name = "card_type")
     private MarketplaceSection cardType; //ForSale, wanted, exchange
 
     /**

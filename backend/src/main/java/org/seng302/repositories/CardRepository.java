@@ -19,6 +19,29 @@ import java.util.List;
 @RepositoryRestResource
 public interface CardRepository extends JpaRepository<Card, Long> {
 
-    List<Card> findCardsById(long id);
+    /**
+     * Get Card by it's ID
+     *
+     * @param id
+     * @return Card
+     */
+    Card findCardById(long id);
 
+    /**
+     * Gets cards with a matching keywords string
+     * todo: get matches for single keywords instead of exact matches
+     *
+     * @param keywords
+     * @return List<Card> a list of cards matching keywords
+     */
+    List<Card> findCardsByKeywords(String keywords);
+
+    /**
+     * Search for cards with marketplace section type:
+     * FORSALE, WANTED, EXCHANGE
+     *
+     * @param cardType enum of MarketplaceSection
+     * @return List<Card> a list of cards matching cardType
+     */
+    List<Card> findInventoryByCardType(MarketplaceSection cardType);
 }
